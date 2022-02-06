@@ -1,0 +1,52 @@
+package test;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.Test;
+
+import page.AddCustomer;
+import page.Dashboard;
+import page.LoginPage;
+import util.BrowserFactory;
+import util.ExcelReader;
+
+public class AddContact {
+	ExcelReader excelRead = new ExcelReader("data\\Tech.xlsx");
+	
+	WebDriver driver;
+	String FULL_NAME = excelRead.getCellData("AddContactInfo","FULLNAME",2);
+	String COMPANY_NAME= excelRead.getCellData("AddContactInfo","COMPANY",2);
+	String EMAIL= excelRead.getCellData("AddContactInfo","EMAIL",2);
+	String PHONE_NUMBER = excelRead.getCellData("AddContactInfo","PHONE",2);
+	String COUNTRY= excelRead.getCellData("AddContactInfo","COUNTRY",2);
+
+	@Test
+	public void validCustomerShouldBeAbleToAddCustomer() {
+
+		driver = BrowserFactory.init();
+
+		LoginPage login = PageFactory.initElements(driver, LoginPage.class);
+
+		login.insertUserName("demo@techfios.com");
+		login.insertPassWord("abc123");
+		login.clickSign();
+
+		Dashboard dashboard = PageFactory.initElements(driver, Dashboard.class);
+
+		dashboard.verifyDashboard();
+		dashboard.clickCustoer();
+		dashboard.addCustomer();
+		
+		AddCustomer addCustomer = PageFactory.initElements(driver, AddCustomer.class);
+		
+		addCustomer.insertFullName(FULL_NAME);
+		addCustomer.selectCompany(COMPANY_NAME);
+		addCustomer.insertEmail(EMAIL);
+		addCustomer.insertPhone(PHONE_NUMBER);
+		addCustomer.selectCountry(COUNTRY);
+		
+		
+
+	}
+
+}
